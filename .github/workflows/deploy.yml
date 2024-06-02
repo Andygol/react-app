@@ -1,7 +1,9 @@
-name: Deploy
+name: Deploy React App
 
 on:
   push:
+    branches: [$default-branch]
+  pull_request:
     branches: [$default-branch]
   workflow_dispatch:
 
@@ -27,7 +29,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./build
+          name: 'github-pages'
+          path: build
 
   deploy:
     needs: build
@@ -35,6 +38,7 @@ jobs:
     permissions:
       pages: write
       id-token: write
+      contents: read
 
     environment:
       name: github-pages
@@ -48,4 +52,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifact_name: 'github-pages'
         
